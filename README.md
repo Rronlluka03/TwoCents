@@ -1,1 +1,4 @@
-![Main Screen](assetsScreenshots/AuthorPosts.jpeg)
+![ScreenShot](assetsScreenshots/AuthorPosts.jpeg)
+![ScreenShot](assetsScreenshots/POST.jpeg)
+![ScreenShot](assetsScreenshots/POSTSFEED.jpeg)
+![ScreenShot](assetsScreenshots/POSTSWITHOUTPOLL.jpeg)
