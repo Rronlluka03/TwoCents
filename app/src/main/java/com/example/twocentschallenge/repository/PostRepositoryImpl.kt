@@ -2,6 +2,8 @@ package com.example.twocentschallenge.repository
 
 import android.util.Log
 import com.example.twocentschallenge.Models.Post
+import com.example.twocentschallenge.Models.PostMeta
+import com.example.twocentschallenge.Models.ResultWrapper
 import com.example.twocentschallenge.api.ApiService
 import com.example.twocentschallenge.api.JsonRpcRequest
 import com.example.twocentschallenge.enums.FilterEnum
@@ -53,18 +55,16 @@ class PostRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun getPoll(id: String): Result<Post?> = withContext(Dispatchers.IO) {
-        val params = mapOf("user_uuid" to id)
+    override suspend fun getPoll(id: String): Result<ResultWrapper?> = withContext(Dispatchers.IO) {
+        val params = mapOf("post_uuid" to id)
 
         val request = JsonRpcRequest(
             id = "anon",
             method = "/v1/polls/get",
             params = params
         )
-
         runCatching {
             val response = apiService.getPoll(request)
-            Log.d("rronirroni", "$response")
             response.result
         }
     }

@@ -1,5 +1,6 @@
 package com.example.twocentschallenge.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.twocentschallenge.Models.Post
@@ -17,8 +18,6 @@ import javax.inject.Inject
 class HomeVM @Inject constructor(
     private val repository: PostRepository
 ) : ViewModel() {
-    private val _posts = MutableStateFlow<List<Post>?>(null)
-    val posts: StateFlow<List<Post>?> get() = _posts
 
     private val _uiState = MutableStateFlow<PostUiState>(PostUiState.Idle)
     val uiState: StateFlow<PostUiState> = _uiState.asStateFlow()
@@ -41,9 +40,5 @@ class HomeVM @Inject constructor(
                         PostUiState.Error(error.localizedMessage ?: "Unknown error")
                 }
             )
-    }
-
-    fun getPoll(postId: String) = viewModelScope.launch {
-        var result = repository.getPoll(postId)
     }
 }

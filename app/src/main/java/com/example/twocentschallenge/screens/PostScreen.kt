@@ -1,5 +1,6 @@
 package com.example.twocentschallenge.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.twocentschallenge.Models.Post
+import com.example.twocentschallenge.Models.ResultWrapper
 import com.example.twocentschallenge.ui.theme.AppTopBar
 import com.example.twocentschallenge.utils.PostActions
 import com.example.twocentschallenge.utils.PostInfo
@@ -49,6 +51,7 @@ fun PostScreen(
     }
 
     val uiState = viewModel.uiState.collectAsState().value
+    val pollstate = viewModel.poll.collectAsState().value
     Scaffold(
         topBar = {
             AppTopBar("TwoCents", true, onBackClick = {
@@ -62,33 +65,48 @@ fun PostScreen(
             .fillMaxSize()
             .padding(it)
             .padding(16.dp)) {
-            when (uiState) {
-                is PostUiState.Idle,
-                PostUiState.Loading -> {
+            when {
+                uiState is PostUiState.Success<*> && pollstate is PostUiState.Success<*> -> {
+                    val post = uiState.post as Post
+                    val poll = pollstate.post as ResultWrapper
+
+                    PostWithComments(post = post, poll = poll) {
+                        onPosterNetWorthClick(post.authorUuid)
+                    }
+                }
+
+                uiState is PostUiState.Loading || pollstate is PostUiState.Loading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
 
-                is PostUiState.Success<*> -> {
-                    val post = (uiState).post as Post
-                    PostWithComments(post,
-                        onNetworthclicked = { onPosterNetWorthClick(post.authorUuid) })
-                }
-
-                is PostUiState.Error -> {
-                    val message = (uiState as PostUiState.Error).message
+                uiState is PostUiState.Error -> {
                     Text(
-                        "Error: $message",
+                        "Error: ${(uiState as PostUiState.Error).message}",
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
+
+                pollstate is PostUiState.Error -> {
+                    Text(
+                        "Error loading poll: ${(pollstate as PostUiState.Error).message}",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+
+                else -> {
+                    Text("Idle", color = Color.Gray)
+                }
             }
+
         }
+
     }
 }
 
 @Composable
-fun PostWithComments(post: Post, onNetworthclicked: () -> Unit) {
+fun PostWithComments(post: Post, poll: ResultWrapper, onNetworthclicked: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxSize()
@@ -122,6 +140,33 @@ fun PostWithComments(post: Post, onNetworthclicked: () -> Unit) {
             Spacer(modifier = Modifier.width(5.dp))
             Text(post.text, style = MaterialTheme.typography.bodyMedium, color = Color.White)
             Spacer(modifier = Modifier.width(5.dp))
+            poll.results.takeIf { it.isNotEmpty() }?.let { results ->
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    results
+                        .filter { it.value.votes > 0 }
+                        .toSortedMap()
+                        .forEach { (key, resultItem) ->
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(12.dp)
+                            ) {
+                                Column {
+                                    Text(
+                                        text = "Option $key",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        text = "Votes: ${resultItem.votes} | Avg Balance: %.2f".format(resultItem.average_balance),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = Color.Gray
+                                    )
+                                }
+                            }
+                        }
+                }
+            }
             PostInfo(post)
             PostActions(poster = post)
         }

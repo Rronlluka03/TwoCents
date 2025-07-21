@@ -53,6 +53,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.twocentschallenge.viewModels.HomeVM
 import com.example.twocentschallenge.Models.Post
+import com.example.twocentschallenge.Models.PostMeta
+import com.example.twocentschallenge.Models.ResultItem
+import com.example.twocentschallenge.Models.ResultWrapper
 import com.example.twocentschallenge.utils.PostActions
 import com.example.twocentschallenge.utils.PostUiState
 import com.example.twocentschallenge.R
@@ -157,7 +160,6 @@ fun PostItems(
             }
             Spacer(modifier = Modifier.width(5.dp))
             Text(item.text, style = MaterialTheme.typography.bodyMedium, color = Color.White)
-            Spacer(modifier = Modifier.width(5.dp))
             Spacer(modifier = Modifier.width(5.dp))
             PostActions(poster = item)
         }

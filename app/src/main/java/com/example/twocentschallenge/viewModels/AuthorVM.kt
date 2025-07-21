@@ -26,7 +26,6 @@ class AuthorVM @Inject constructor(
 
     fun getPostById(id: String) = viewModelScope.launch {
         _uiState.value = PostUiState.Loading
-        Log.d("rronirroni", "$id")
         _uiState.value = PostUiState.Loading
 
         repository.getPostsPerAuthor(id)
