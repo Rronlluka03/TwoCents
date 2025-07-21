@@ -84,7 +84,6 @@ fun AuthorPostsScreen(navController: NavController, authorId: String, viewModel:
                 }
 
                 is PostUiState.Error -> {
-                    // Show error feedback
                     val message = (uiState as PostUiState.Error).message
                     Text(
                         "Error: $message",
@@ -122,7 +121,7 @@ fun PostItem(
                     maxLines = 1,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
-                    color = ListItemDefaults.contentColor,
+                    color = Color.White,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f, fill = false)
                 )

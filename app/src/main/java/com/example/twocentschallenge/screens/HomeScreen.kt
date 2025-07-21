@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItemDefaults.contentColor
@@ -71,40 +72,46 @@ fun HomeScreen(viewModel: HomeVM = hiltViewModel(), onPostClick: (String) -> Uni
             )
         },
         modifier = Modifier.fillMaxSize(),
-        containerColor = Color.Black // full screen gray
+        containerColor = Color.Black
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+        ) {
 
-        when (uiState) {
-            is PostUiState.Idle,
-            PostUiState.Loading -> {
-            }
+            when (uiState) {
+                is PostUiState.Idle,
+                PostUiState.Loading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
 
-            is PostUiState.Success<*> -> {
-                val posts = (uiState).post as List<Post>
-                LazyColumn(contentPadding = it) {
-                    items(posts.size ?: 0) { post ->
-                        PostItems(
-                            posts.get(post),
-                            onClick = { posts.get(post).let { onPostClick(it.uuid) } },
-                            onNetworthclicked = { onPosterNetWorthClick(posts.get(post).authorUuid) }
-                        )
+                is PostUiState.Success<*> -> {
+                    val posts = (uiState).post as List<Post>
+                    LazyColumn {
+                        items(posts.size ?: 0) { post ->
+                            PostItems(
+                                posts.get(post),
+                                onClick = { posts.get(post).let { onPostClick(it.uuid) } },
+                                onNetworthclicked = { onPosterNetWorthClick(posts.get(post).authorUuid) }
+                            )
 
-                        Divider(
-                            color = Color.Gray,
-                            thickness = 0.5.dp,
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        )
+                            Divider(
+                                color = Color.Gray,
+                                thickness = 0.5.dp,
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            )
+                        }
                     }
                 }
-            }
 
-            is PostUiState.Error -> {
-                // Show error feedback
-                val message = (uiState as PostUiState.Error).message
-                Text(
-                    "Error: $message",
-                    color = MaterialTheme.colorScheme.error,
-                )
+                is PostUiState.Error -> {
+                    val message = (uiState as PostUiState.Error).message
+                    Text(
+                        "Error: $message",
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
             }
         }
     }
@@ -137,7 +144,7 @@ fun PostItems(
                     maxLines = 1,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
-                    color = contentColor,
+                    color = Color.White,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f, fill = false)
                 )

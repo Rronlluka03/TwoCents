@@ -23,7 +23,8 @@ fun AppNavigation() {
 
         composable("postDetail/{postId}") { backStackEntry ->
             val postId = backStackEntry.arguments?.getString("postId") ?: ""
-            PostScreen(navController, postId,onPostClick = { id ->
+            PostScreen(navController, postId,
+                onPostClick = { id ->
                 navController.navigate("postDetail/$id")
             },
 
