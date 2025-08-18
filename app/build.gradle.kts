@@ -106,9 +106,6 @@ dependencies {
     // Instrumentation Testing
     androidTestImplementation (libs.androidx.junit)
     androidTestImplementation (libs.androidx.core)
-//    androidTestImplementation (libs.androidx.runner)
-//    androidTestImplementation (libs.androidx.rules)
-    androidTestImplementation (libs.androidx.sqlite.framework)
 
     //Compose navigation
     implementation (libs.androidx.navigation.compose.v260)

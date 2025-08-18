@@ -1,18 +1,21 @@
 package com.example.twocentschallenge.api
 
 import com.example.twocentschallenge.Models.AuthorPosts
+import com.example.twocentschallenge.Models.CommentsResponse
 import com.example.twocentschallenge.Models.Post
-import com.example.twocentschallenge.Models.PostMeta
+import com.example.twocentschallenge.Models.PostResponse
 import com.example.twocentschallenge.Models.PostWrapper
-import com.example.twocentschallenge.Models.ResultItem
-import com.example.twocentschallenge.Models.ResultWrapper
+import com.example.twocentschallenge.Models.Poll
 import com.squareup.moshi.JsonClass
 import retrofit2.http.Body
 import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface ApiService {
-    suspend fun getPostById(id: String): Post
+    @POST("prod")
+    suspend fun getPost(
+        @Body request: JsonRpcRequest
+    ): JsonRpcResponse<PostResponse>
 
     @POST("prod")
     @Headers(
@@ -40,7 +43,12 @@ interface ApiService {
     @POST("prod")
     suspend fun getPoll(
         @Body request: JsonRpcRequest
-    ): JsonRpcResponse<ResultWrapper>
+    ): JsonRpcResponse<Poll>
+
+    @POST("prod")
+    suspend fun getPostComments(
+        @Body request: JsonRpcRequest
+    ): JsonRpcResponse<CommentsResponse>
 }
 
 @JsonClass(generateAdapter = true)

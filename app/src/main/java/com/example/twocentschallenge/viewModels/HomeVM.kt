@@ -19,9 +19,8 @@ class HomeVM @Inject constructor(
     private val repository: PostRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<PostUiState>(PostUiState.Idle)
-    val uiState: StateFlow<PostUiState> = _uiState.asStateFlow()
-
+    private val _uiState = MutableStateFlow<PostUiState<List<Post>?>>(PostUiState.Loading)
+    val uiState: StateFlow<PostUiState<List<Post>?>> = _uiState.asStateFlow()
 
     init {
         getItems()
@@ -30,10 +29,10 @@ class HomeVM @Inject constructor(
     fun getItems() = viewModelScope.launch {
 
         _uiState.value = PostUiState.Loading
-        repository.getPosts(FilterEnum.NewToday)
+        repository.getPosts(FilterEnum.TopAllTime)
             .fold(
-                onSuccess = { list ->
-                    _uiState.value = PostUiState.Success(list)
+                onSuccess = {
+                    _uiState.value = PostUiState.Success(it)
                 },
                 onFailure = { error ->
                     _uiState.value =

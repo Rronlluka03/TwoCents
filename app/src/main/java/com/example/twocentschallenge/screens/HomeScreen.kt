@@ -28,7 +28,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItemDefaults.contentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -53,13 +52,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.twocentschallenge.viewModels.HomeVM
 import com.example.twocentschallenge.Models.Post
-import com.example.twocentschallenge.Models.PostMeta
-import com.example.twocentschallenge.Models.ResultItem
-import com.example.twocentschallenge.Models.ResultWrapper
-import com.example.twocentschallenge.utils.PostActions
 import com.example.twocentschallenge.utils.PostUiState
 import com.example.twocentschallenge.R
 import com.example.twocentschallenge.ui.theme.AppTopBar
+import com.example.twocentschallenge.ui.theme.IconNetWorth
+import com.example.twocentschallenge.ui.theme.PostActions
+import com.example.twocentschallenge.ui.theme.shimmer
+import com.example.twocentschallenge.utils.formatCurrency
+import com.example.twocentschallenge.utils.subscriptionColor
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.Locale
@@ -167,58 +167,6 @@ fun PostItems(
 }
 
 @Composable
-fun IconNetWorth(
-    subscriptionType: String,
-    amount: String,
-    modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(32.dp),
-    borderWidth: Dp = 1.dp,
-    padding: PaddingValues = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
-    onClick: () -> Unit = {}
-) {
-    val color = subscriptionColor(subscriptionType)
-    Row(
-        modifier = modifier
-            .clip(shape)
-            .background(color.first)
-            .border(borderWidth, color.second, shape)
-            .clickable(onClick = onClick)
-            .padding(padding),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
-
-    ) {
-
-        Box(
-            modifier = Modifier
-                .size(24.dp)
-                .clip(CircleShape)
-                .background(color.first)
-                .border(
-                    width = 2.dp,
-                    color = color.second,
-                    shape = CircleShape
-                )
-                .shimmer(durationMillis = 1000),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painterResource(id = R.drawable.usd_sign),
-                contentDescription = null,
-                tint = color.second,
-                modifier = Modifier.size(16.dp)
-            )
-        }
-
-        Text(
-            text = amount,
-            style = MaterialTheme.typography.titleSmall,
-            color = color.second
-        )
-    }
-}
-
-@Composable
 fun UserAssets(
     number: Int,
     modifier: Modifier = Modifier
@@ -233,79 +181,3 @@ fun UserAssets(
     )
 }
 
-@Composable
-private fun ItemInfo(
-    icon: Int,
-    text: String,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        Icon(
-            painterResource(id = icon),
-            contentDescription = null,
-            tint = Color.White,
-            modifier = Modifier.size(16.dp)
-        )
-
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodySmall,
-            color = Color.White
-        )
-    }
-}
-
-fun formatCurrency(amount: BigDecimal): String {
-    val fmt = NumberFormat.getNumberInstance(Locale.US).apply {
-        minimumFractionDigits = 2
-        maximumFractionDigits = 2
-    }
-    return fmt.format(amount)
-}
-
-fun subscriptionColor(subscription: String) : Pair<Color,Color> {
-    return when(subscription) {
-        "0" ->  Pair(Color.Black, Color.White)
-        "1" ->  Pair(Color(0xFFCD7F32), Color.Black)
-        "2" ->  Pair(Color(0xFFC0C0C0), Color.Black)
-        "3" ->  Pair(Color(0xFFFFD700), Color.Black)
-        "4" ->  Pair(Color(0xFF2D2C28), Color.White)
-        else -> Pair(Color.White, Color.Black)
-    }
-}
-
-fun Modifier.shimmer(
-    colors: List<Color> = listOf(Color.Transparent, Color.White.copy(alpha = 0.4f), Color.Transparent),
-    shimmerWidth: Float = 200f,
-    durationMillis: Int = 1200
-): Modifier = composed {
-    val transition = rememberInfiniteTransition(label = "")
-    val progress by transition.animateFloat(
-        initialValue  = 0f,
-        targetValue   = 1f,
-        animationSpec = infiniteRepeatable(
-            animation  = tween(durationMillis, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ), label = ""
-    )
-
-    drawWithCache {
-        val widthPx   = size.width
-        val band      = shimmerWidth
-        val offsetX   = (widthPx + band) * progress - band
-        val brush     = Brush.linearGradient(
-            colors,
-            start = Offset(offsetX, 0f),
-            end   = Offset(offsetX + band, 0f)
-        )
-
-        onDrawWithContent {
-            drawContent()
-            drawRect(brush, blendMode = BlendMode.SrcOver)
-        }
-    }
-}

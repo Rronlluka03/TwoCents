@@ -21,8 +21,8 @@ class AuthorVM @Inject constructor(
     private val _posts = MutableStateFlow<List<Post>?>(null)
     val posts: StateFlow<List<Post>?> get() = _posts
 
-    private val _uiState = MutableStateFlow<PostUiState>(PostUiState.Idle)
-    val uiState: StateFlow<PostUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<PostUiState<List<Post?>>>(PostUiState.Loading)
+    val uiState: StateFlow<PostUiState<List<Post?>>> = _uiState.asStateFlow()
 
     fun getPostById(id: String) = viewModelScope.launch {
         _uiState.value = PostUiState.Loading

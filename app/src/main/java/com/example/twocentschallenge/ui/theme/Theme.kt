@@ -1,6 +1,12 @@
 package com.example.twocentschallenge.ui.theme
 
 import android.os.Build
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -22,8 +28,14 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -105,4 +117,36 @@ fun AppTopBar(
         ),
         modifier = modifier
     )
+}
+
+fun Modifier.shimmer(
+    colors: List<Color> = listOf(Color.Transparent, Color.White.copy(alpha = 0.4f), Color.Transparent),
+    shimmerWidth: Float = 200f,
+    durationMillis: Int = 1200
+): Modifier = composed {
+    val transition = rememberInfiniteTransition(label = "")
+    val progress by transition.animateFloat(
+        initialValue  = 0f,
+        targetValue   = 1f,
+        animationSpec = infiniteRepeatable(
+            animation  = tween(durationMillis, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ), label = ""
+    )
+
+    drawWithCache {
+        val widthPx   = size.width
+        val band      = shimmerWidth
+        val offsetX   = (widthPx + band) * progress - band
+        val brush     = Brush.linearGradient(
+            colors,
+            start = Offset(offsetX, 0f),
+            end   = Offset(offsetX + band, 0f)
+        )
+
+        onDrawWithContent {
+            drawContent()
+            drawRect(brush, blendMode = BlendMode.SrcOver)
+        }
+    }
 }

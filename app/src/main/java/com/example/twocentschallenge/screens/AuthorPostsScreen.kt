@@ -35,10 +35,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import com.example.twocentschallenge.viewModels.AuthorVM
-import com.example.twocentschallenge.utils.ComposableLifecycle
 import com.example.twocentschallenge.Models.Post
 import com.example.twocentschallenge.R
 import com.example.twocentschallenge.ui.theme.AppTopBar
+import com.example.twocentschallenge.ui.theme.ComposableLifecycle
 import com.example.twocentschallenge.utils.PostUiState
 
 @Composable

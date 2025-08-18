@@ -15,7 +15,6 @@ kotlinxCoroutines = "1.7.3"
 kotlinxCoroutinesCore = "1.7.3"
 room = "2.7.2"
 hiltAndroid = "2.51.1"
-sqlite = "2.5.2"
 navCompose = "2.8.0"
 hiltNav = "1.2.0"
 navXcompose = "2.8.0"
@@ -54,7 +53,6 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
-androidx-sqlite-framework = { module = "androidx.sqlite:sqlite-framework", version.ref = "sqlite" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNav" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navCompose" }
 androidx-navigation-compose-v260 = { module = "androidx.navigation:navigation-compose", version.ref = "navXcompose" }

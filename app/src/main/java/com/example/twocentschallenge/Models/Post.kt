@@ -4,6 +4,13 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import java.time.Instant
 
+
+@JsonClass(generateAdapter = true)
+data class PostResponse(
+    @Json(name = "post")
+    val post: Post
+)
+
 @JsonClass(generateAdapter = true)
 data class Post (
     @Json(name = "uuid")

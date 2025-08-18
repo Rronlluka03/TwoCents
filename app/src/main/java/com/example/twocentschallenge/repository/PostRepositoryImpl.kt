@@ -1,15 +1,12 @@
 package com.example.twocentschallenge.repository
 
-import android.util.Log
+import com.example.twocentschallenge.Models.Comment
 import com.example.twocentschallenge.Models.Post
-import com.example.twocentschallenge.Models.PostMeta
-import com.example.twocentschallenge.Models.ResultWrapper
+import com.example.twocentschallenge.Models.Poll
 import com.example.twocentschallenge.api.ApiService
 import com.example.twocentschallenge.api.JsonRpcRequest
 import com.example.twocentschallenge.enums.FilterEnum
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -36,8 +33,18 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPostByID(id: String): Post {
-        return apiService.getPostById(id)
+    override suspend fun getPostByID(id: String): Result<Post?> = withContext(Dispatchers.IO) {
+        val params = mapOf("post_uuid" to id)
+
+        val request = JsonRpcRequest(
+            id = "anon",
+            method = "/v1/posts/get",
+            params = params
+        )
+        runCatching {
+            val response = apiService.getPost(request)
+            response.result?.post
+        }
     }
 
     override suspend fun getPostsPerAuthor(authorId: String): Result<List<Post>?> = withContext(Dispatchers.IO) {
@@ -55,7 +62,7 @@ class PostRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun getPoll(id: String): Result<ResultWrapper?> = withContext(Dispatchers.IO) {
+    override suspend fun getPoll(id: String): Result<Poll?> = withContext(Dispatchers.IO) {
         val params = mapOf("post_uuid" to id)
 
         val request = JsonRpcRequest(
@@ -69,5 +76,19 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getComments(id: String): Result<List<Comment>?> = withContext(Dispatchers.IO) {
+        val params = mapOf("post_uuid" to id)
+
+        val request = JsonRpcRequest(
+            id = "anon",
+            method = "/v1/comments/get",
+            params = params
+        )
+
+        runCatching {
+            val response = apiService.getPostComments(request)
+            response.result?.comments
+        }
+    }
 
 }

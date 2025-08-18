@@ -1,11 +1,13 @@
 package com.example.twocentschallenge.utils
 
+import androidx.compose.runtime.State
+import com.example.twocentschallenge.Models.PollOptions
 import com.example.twocentschallenge.Models.Post
 
-sealed class PostUiState {
-    object Idle : PostUiState()
-    object Loading : PostUiState()
-    data class Success<T>(val post: T) : PostUiState()
-    data class SuccessPosts(val posts: List<Post>)
-    data class Error(val message: String) : PostUiState()
+sealed interface PostUiState<out T> {
+    data object Idle : PostUiState<Nothing>
+    data object Loading : PostUiState<Nothing>
+    data class Success<T>(val post: T) : PostUiState<T>
+    data class Error(val message: String) : PostUiState<Nothing>
+
 }
