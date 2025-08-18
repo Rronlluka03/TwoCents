@@ -45,7 +45,7 @@ fun IconNetWorth(
     subscriptionType: String,
     amount: String,
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(32.dp),
+    shape: Shape = RoundedCornerShape(24.dp),
     borderWidth: Dp = 1.dp,
     padding: PaddingValues = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
     onClick: () -> Unit = {}

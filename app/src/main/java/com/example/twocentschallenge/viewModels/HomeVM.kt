@@ -29,7 +29,7 @@ class HomeVM @Inject constructor(
     fun getItems() = viewModelScope.launch {
 
         _uiState.value = PostUiState.Loading
-        repository.getPosts(FilterEnum.TopAllTime)
+        repository.getPosts(FilterEnum.Controversial)
             .fold(
                 onSuccess = {
                     _uiState.value = PostUiState.Success(it)

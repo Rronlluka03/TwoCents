@@ -322,7 +322,22 @@ fun CommentItem(comment: Comment, onNetworthclicked: () -> Unit) {
                     onClick = onNetworthclicked
                 )
                 Spacer(Modifier.width(8.dp))
-                UserInfo(comment.authorMeta,comment.createdAt.toString())
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = comment.authorMeta.arena,
+                        color = Color(0xFFAAAAAA),
+                        fontSize = 12.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    Text(
+                        text = formatDateTime(comment.createdAt.toString()),
+                        color = Color(0xFFAAAAAA),
+                        fontSize = 12.sp
+                    )
+                }
             }
 
             Text(
