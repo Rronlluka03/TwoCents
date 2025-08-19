@@ -26,6 +26,21 @@ class HomeVM @Inject constructor(
         getItems()
     }
 
+    fun applyFilter(filterEnum: FilterEnum) = viewModelScope.launch {
+        _uiState.value = PostUiState.Loading
+
+        repository.getPosts(filterEnum)
+            .fold(
+                onSuccess = {
+                    _uiState.value = PostUiState.Success(it)
+                },
+                onFailure = { error ->
+                    _uiState.value =
+                        PostUiState.Error(error.localizedMessage ?: "Unknown error")
+                }
+            )
+    }
+
     fun getItems() = viewModelScope.launch {
 
         _uiState.value = PostUiState.Loading

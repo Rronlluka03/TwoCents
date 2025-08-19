@@ -7,15 +7,23 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.twocentschallenge.R
+import com.example.twocentschallenge.enums.FilterEnum
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -63,6 +72,7 @@ fun AppTopBar(
     showBackButton: Boolean = false,
     showLogo: Boolean = true,
     onBackClick: () -> Unit = {},
+    onFilterClicked: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
@@ -99,12 +109,13 @@ fun AppTopBar(
                     modifier = Modifier.weight(1f),
                     contentAlignment = Alignment.CenterEnd
                 ) {
-                    if (showLogo) {
+                    IconButton(onClick = onFilterClicked) {
                         Icon(
-                            painterResource(id = R.drawable.logo),
-                            contentDescription = "App Logo",
-                            tint = Color.Yellow,
-                            modifier = Modifier.size(32.dp)
+                            painter = painterResource(id = R.drawable.filter_list),
+                            contentDescription = "Filter",
+                            modifier = Modifier
+                                .padding(end = 8.dp),
+                            tint = Color.White
                         )
                     }
                 }

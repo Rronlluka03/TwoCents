@@ -57,7 +57,8 @@ fun IconNetWorth(
             .background(color.first)
             .border(borderWidth, color.second, shape)
             .clickable(onClick = onClick)
-            .padding(padding),
+            .padding(padding).shimmer(durationMillis = 1000),
+
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
 
@@ -72,8 +73,7 @@ fun IconNetWorth(
                     width = 2.dp,
                     color = color.second,
                     shape = CircleShape
-                )
-                .shimmer(durationMillis = 1000),
+                ),
             contentAlignment = Alignment.Center
         ) {
             Icon(

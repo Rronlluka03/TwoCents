@@ -1,5 +1,6 @@
 package com.example.twocentschallenge.screens
 
+import android.util.Log
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -31,9 +33,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -54,6 +60,7 @@ import com.example.twocentschallenge.viewModels.HomeVM
 import com.example.twocentschallenge.Models.Post
 import com.example.twocentschallenge.utils.PostUiState
 import com.example.twocentschallenge.R
+import com.example.twocentschallenge.enums.FilterEnum
 import com.example.twocentschallenge.ui.theme.AppTopBar
 import com.example.twocentschallenge.ui.theme.IconNetWorth
 import com.example.twocentschallenge.ui.theme.PostActions
@@ -68,10 +75,14 @@ import java.util.Locale
 fun HomeScreen(viewModel: HomeVM = hiltViewModel(), onPostClick: (String) -> Unit,
                onPosterNetWorthClick: (String) -> Unit) {
     val uiState = viewModel.uiState.collectAsState().value
+    var showFilterDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             AppTopBar(
-                "TwoCents",false
+                "TwoCents",false, onFilterClicked = {
+                    showFilterDialog = true
+                }
             )
         },
         modifier = Modifier.fillMaxSize(),
@@ -82,6 +93,16 @@ fun HomeScreen(viewModel: HomeVM = hiltViewModel(), onPostClick: (String) -> Uni
                 .fillMaxSize()
                 .padding(it)
         ) {
+
+            if (showFilterDialog) {
+                FilterDialog(
+                    onDismiss = { showFilterDialog = false },
+                    onFilterSelected = { filterType ->
+                        viewModel.applyFilter(filterType)
+                        showFilterDialog = false
+                    }
+                )
+            }
 
             when (uiState) {
                 is PostUiState.Idle,
@@ -178,6 +199,49 @@ fun UserAssets(
         modifier = modifier
             .background(Color.Black.copy(alpha = 0.6f), shape = RoundedCornerShape(4.dp))
             .padding(horizontal = 6.dp, vertical = 2.dp)
+    )
+}
+
+
+@Composable
+fun FilterDialog(
+    onDismiss: () -> Unit,
+    onFilterSelected: (FilterEnum) -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Filter Posts", color = Color.White) },
+        text = {
+            Column {
+                FilterOption("New Today", FilterEnum.NewToday, onFilterSelected)
+                FilterOption("Top Today", FilterEnum.TopToday, onFilterSelected)
+                FilterOption("Controversial", FilterEnum.Controversial, onFilterSelected)
+                FilterOption("Top All Time", FilterEnum.TopAllTime, onFilterSelected)
+            }
+        },
+        containerColor = Color(0xFF1E1E1E),
+        textContentColor = Color.White,
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel", color = Color.White)
+            }
+        }
+    )
+}
+
+@Composable
+fun FilterOption(
+    text: String,
+    filterType: FilterEnum,
+    onSelected: (FilterEnum) -> Unit
+) {
+    Text(
+        text = text,
+        color = Color.White,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onSelected(filterType) }
+            .padding(vertical = 12.dp)
     )
 }
 
